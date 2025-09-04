@@ -1,5 +1,7 @@
+"use client";
 import React, { useState, useRef, useEffect} from 'react'
 import { Textarea } from "@/components/ui/textarea"
+import useSpeechRecognition from '@/lib/useSpeechRecognition'
 
 
 interface ChatInputProps{
@@ -11,6 +13,14 @@ const ChatInput = ({onSubmit,isLoading}:ChatInputProps) => {
   const [Input,setInput] = useState("");
   const textareaRef = useRef<HTMLTextAreaElement>(null)
   const [isSpeechActive, setIsSpeechActive] = useState(false)
+  const {transcript, isListening ,error} = useSpeechRecognition(isSpeechActive);
+
+  useEffect(() =>{
+    if(transcript){
+      setInput((prevInput => prevInput + " " + transcript))
+    }
+  },[transcript])
+
 
   const handleSubmit = (e:React.FormEvent) => {
     e.preventDefault();
@@ -41,8 +51,11 @@ const ChatInput = ({onSubmit,isLoading}:ChatInputProps) => {
       <form onSubmit={handleSubmit} className='w-full'>
         <Textarea
         ref={textareaRef}
-        placeholder=''
-
+        placeholder={isListening ? 'Listening' : 'Ask Anything to deepseek'} 
+        className='w-full resize-none overflow-hidden text-sm bg-background border-none outline-none right-0 focus:outline:none focus:border:none focus:ring-0 focus-visible:outline-none shadow-none'
+        value={Input}
+        disabled={isLoading}
+        rows={1}
         />
       </form>
     </div>

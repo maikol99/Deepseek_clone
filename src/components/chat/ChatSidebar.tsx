@@ -67,9 +67,9 @@ const ChatSidebar = () => {
           {title}
         </h3>
         <div className="space-y-1 w-[260px]">
-          {chats.map((chat) => (
+          {chats.map((chat, index) => (
             <Link
-              key={chat._id}
+              key={chat._id ?? index}
               href={`/chat/${chat._id}`}
               className={cn(
                 "flex justify-around items-center px-2 py-1 rounded-lg group hover:bg-[#dae3ef]:",
