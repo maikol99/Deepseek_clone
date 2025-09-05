@@ -14,6 +14,8 @@ import {
   SheetTitle,
   SheetTrigger,
 } from "../ui/sheet";
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "../ui/dropdown-menu";
+import { Avatar, AvatarFallback, AvatarImage } from "@radix-ui/react-avatar";
 
 
 interface Chat {
@@ -32,10 +34,18 @@ const ChatSidebar = () => {
   const pathname = usePathname();
   const router = useRouter();
   const chats = [{
-    title:""
+    _id:'ffasgas'
   }];
+
+  const user={
+    name:'maikol',
+    profilePicture:'',
+    email:'alegremaikol6@gmail.com'
+
+  }
   const [sidebarOpen, setSidebarOpen] = useState(true);
   const isChatLoading = false;
+  
 
   const todayChats: Chat[] = [];
   const yesterdayChats: Chat[] = [];
@@ -57,6 +67,9 @@ const ChatSidebar = () => {
       olderChats.push(chat);
     }
   });
+
+  const handleLogout = () =>{
+  }
 
   const SidebarSection = ({ title, chats, pathname }: SidebarSectionProps) => {
     if (chats.length === 0) return null;
@@ -156,12 +169,71 @@ const ChatSidebar = () => {
           </>
         )}
       </ScrollArea>
+
+      <div className="sticky bottom-0 bg-[#f7f7ff]">
+        <div className="border-t p-4">
+          <Button variant='outline' className="w-full justify-start gap-2"> 
+            <Smartphone className="h-4 w-4"/>
+            Get App
+            <span className="ml-auto rounded bg-blue-600 px-1.5 py-0.5 text-xs text-white">NEW</span>
+          </Button>   
+        </div>
+        <div className="border-t p-4 ">
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button variant="ghost" className="w-full justify-start gap-3 px-3 py-6 hover:bg-gray-100">
+                <Avatar className="h-8 w-8">
+                  <AvatarImage src={user.profilePicture}/>
+                  <AvatarFallback>
+                    {user?.name?.charAt(0).toUpperCase()}
+                  </AvatarFallback>
+                </Avatar>
+                <div className="flex flex-col items-start">
+                  <span className="text-sm font-medium text-gray-900 truncate max-w-[160px]">
+                    my profile
+                  </span>
+                </div>
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent
+            className='w-64 p-2 rounded-xl shadow-lg border border-gray-200'
+            align="start"
+            side='top'
+            >
+
+              <div className="flex items-center gap-3 p-3 border-b border-gray-100">
+                 <Avatar className="h-10 w-10">
+                  <AvatarImage src={user.profilePicture}/>
+                  <AvatarFallback>
+                    {user?.name?.charAt(0).toUpperCase()}
+                  </AvatarFallback>
+                </Avatar>
+
+                <div className="flex-1 min-w-0">
+                  <p className="text-sm font-medium text-gray-900 truncate">{user.name}</p>
+                  <p className="text-xs text-gray-500 truncate">{user.email}</p>
+                </div>
+
+              </div>
+
+              <DropdownMenuItem
+                className="flex items-center mt-2 gap-2 p-3 rounded-lg cursor-pointer text-red-600 hover:bg-red-50 focus:bg-red-100"
+                onClick={handleLogout}
+              >
+                <LogOut className="h-4 w-4"/>
+                <span className="text-sm">Logout</span>
+              </DropdownMenuItem>
+
+            </DropdownMenuContent>
+          </DropdownMenu>
+        </div>
+      </div>
     </div>
   );
 
   return (
     <>
-      <div className="md:hidden fixed top-0 z-58 flex h-16 w-full items-center justify-beetween border-b bg-[#f7fcff] px-4">
+      <div className="md:hidden fixed top-0 z-50 flex h-16 w-full items-center justify-between border-b bg-[#f7fcff] px-4">
         <Sheet>
           <SheetTrigger asChild>
             <Button variant="ghost" size="icon">
@@ -177,14 +249,14 @@ const ChatSidebar = () => {
           </SheetContent>
         </Sheet>
         <div className="text-2xl font-semibold text-gray-700 mx-auto">
-          Deepeseek
+          deepseek
         </div>
         <div className="w-10"/>
       </div>
 
       <div className="hidden md:block">
         <div className={cn('fixed top-0 bottom-0 left-0 z-40 transition-all duration-300'
-          , sidebarOpen ? 'w-72': 'w-8'
+          , sidebarOpen ? 'w-72': 'w-0'
   )}>
 
     {sidebarOpen && <SidebarContent/>}
