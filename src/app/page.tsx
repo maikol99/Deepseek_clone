@@ -1,8 +1,13 @@
+'use client'
 import ChatInput from "@/components/chat/ChatInput";
 import ChatSidebar from "@/components/chat/ChatSidebar";
 import Image from "next/image";
 
 export default function Home() {
+  const isLoading = false
+  const handleMessage = async(message:string) => {
+
+  }
   return (
     <div className="flex h-screen">
       <ChatSidebar />
@@ -23,7 +28,7 @@ export default function Home() {
           </p>
         </div>
         <div className="fixed left-8 top-30 right-0 bottom-0 mx-auto flex px-4 justify-center items-center">
-              <ChatInput/>
+              <ChatInput onSubmit={handleMessage} isLoading={isLoading}/>
         </div>
       </div>
     </div>
