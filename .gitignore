@@ -1,0 +1,25 @@
+# Node modules
+node_modules/
+client/node_modules/
+backend/node_modules/
+
+# Entorno
+.env
+.env.*.local
+
+# Logs
+*.log
+
+# Next.js
+client/.next/
+client/out/
+client/build/
+client/*.tsbuildinfo
+
+# Backend (Node/Express)
+backend/build/
+backend/dist/
+backend/*.tsbuildinfo
+
+# Sistemas
+.DS_Store
