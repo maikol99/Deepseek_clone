@@ -15,8 +15,7 @@ const ChatInput = ({ onSubmit, isLoading }: ChatInputProps) => {
   const [Input, setInput] = useState("");
   const textareaRef = useRef<HTMLTextAreaElement>(null);
   const [isSpeechActive, setIsSpeechActive] = useState(false);
-  const { transcript, isListening, error } =
-    useSpeechRecognition(isSpeechActive);
+  const { transcript, isListening, error } = useSpeechRecognition(isSpeechActive);
 
 
     
