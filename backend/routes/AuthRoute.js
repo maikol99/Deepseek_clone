@@ -15,9 +15,9 @@ router.get('/me', authMiddleware,getCurrentUser)
 
 
 //Google Oauth routes
-router.get('/google',passport.authenticate('google'), { scope: ['profile','email']})
+router.get('/google',passport.authenticate('google', { scope: ['profile','email']}))
 
-router.get('google/callback/', passport.authenticate('google', {session:false}), { failuRedirect:'/sign-in'}, googleCallback)
+router.get('google/callback/', passport.authenticate('google', {session:false},{ failuRedirect:'/sign-in'}), googleCallback)
 
 router.post('/logout', (req,res) =>{
     res.clearCookie('auth_token',{

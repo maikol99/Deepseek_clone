@@ -2,18 +2,19 @@ const express = require("express");
 const cors = require("cors");
 const cookieParser = require("cookie-parser");
 const dotenv = require("dotenv");
+const connectToMongoDb = require("./config/dbConnect");
+const { applyTimestamps } = require("./models/User");
+const passport = require("passport");
+require("./controllers/strategy/google.strategy");
 
 dotenv.config();
-
 
 const app = express();
 const PORT = process.env.PORT || 5000;
 
-
 app.use(express.json());
 app.use(cookieParser());
 app.use(express.urlencoded({ extended: true }));
-
 
 app.use(
   cors({
@@ -22,6 +23,12 @@ app.use(
   })
 );
 
+app.use(passport.initialize());
+
+//Routes
+app.use("/api/auth", require("./routes/AuthRoute"));
+app.use("/api/chats", require("./routes/ChatRoute"));
+app.use("/api/conversation", require("./routes/ConversationRoute"));
 
 app.use((err, req, res, next) => {
   console.log(err.stack);

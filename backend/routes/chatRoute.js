@@ -6,7 +6,7 @@ const authMiddleware = require('../middleware/AuthMiddleware')
 
 const router= express.Router();
 
-//aply middleware
+//aply middleware para todas las rutas
 router.use(authMiddleware)
 
 //get all chats

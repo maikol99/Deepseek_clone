@@ -5,6 +5,9 @@ const jwt = require('jsonwebtoken')
 
 exports.register = async(req,res) => {
     try{
+
+        console.log("👉 Datos que llegaron en req.body:", req.body); // 👈 log
+
         const {name,email,password} = req.body;
         if(!name || !email || !password ){
             return res.status(400).json({error:'please provide all required fields'})
@@ -12,7 +15,10 @@ exports.register = async(req,res) => {
 
         //check if user already exit
         const existingUser = await User.findOne({email});
+        console.log("🔍 Usuario existente:", existingUser);
+
         if(existingUser){
+            console.log("❌ Usuario ya existe, no se puede registrar");
             return res.status(400).json({error:'User already exists'})
 
         }
@@ -24,12 +30,13 @@ exports.register = async(req,res) => {
             password,
             provider:"credentials",
         })
+        console.log("✅ Nuevo usuario creado:", user);
 
         const token = jwt.sign({id:user._id, email:user.email},process.env.JWT_SECRET,{expiresIn:'30d'})
         res.cookie('auth_token',token,{
             httpOnly:true,
             samesite:'name',
-            secure:true
+            secure:true //la cookie solo se envía en HTTPS (no en HTTP).
         })
 
         res.status(201).json({
@@ -51,26 +58,34 @@ exports.register = async(req,res) => {
 
 exports.login= async(req,res) => {
     try{
+        //1️⃣ Extraer datos del body
+        //Si no se mandan ambos campos → devuelve 400 Bad Request.
         const {email,password} = req.body;
         if(!email || !password ){
             return res.status(400).json({error:'please provide email and password'})
         }
 
-        //check if user already exit
+
+        //2️⃣ Buscar al usuario en la base de datos
         const user = await User.findOne({email});
         if(!user){
             return res.status(401).json({error:'Invalid credentials'})
         }
 
+        //compara la contraseña
         const isMatch = await user.comparePassword(password);
          if(!isMatch){
             return res.status(401).json({error:'Invalid password'})
         }
 
-        const token = jwt.sign({id:user._id, email:user.email},process.env.JWT_SECRET,{expiresIn:'30d'})
+        const token = jwt.sign(
+            {id:user._id, email:user.email},
+            process.env.JWT_SECRET,
+            {expiresIn:'30d'}
+        );
         res.cookie('auth_token',token,{
             httpOnly:true,
-            samesite:'name',
+            samesite:'none',
             secure:true
         })
 
@@ -93,6 +108,7 @@ exports.login= async(req,res) => {
 exports.getCurrentUser = async(req,res) => {
     try{
         const userId = req.user.id
+        console.log(userId)
         const user = await User.findById(userId).select("-password");
         if(!user){
             return res.status(401).json({error:'User not found'})
@@ -109,5 +125,27 @@ exports.getCurrentUser = async(req,res) => {
         })
     }catch (error){
         res.status(500).json({error:error.message})
+    }
+}
+
+
+exports.googleCallback = async(req,res) => {
+    try{
+
+        const token = jwt.sign(
+            {id:req.user._id, email:req.user.email},
+            process.env.JWT_SECRET,
+            {expiresIn:'30d'}
+        );
+        res.cookie('auth_token',token,{
+            httpOnly:true,
+            samesite:'none',
+            secure:true
+        })
+
+        res.redirect(`${procces.env.FRONTEND_URL}/auth/succes?token=${token}`)
+    }catch (error){
+        res.status(500).json({error:error.message})
+
     }
 }
